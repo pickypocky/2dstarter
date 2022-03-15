@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//keys=left,right,space
+
 public class PlayerScript : MonoBehaviour
 {
     Animator anim;
@@ -43,18 +45,26 @@ public class PlayerScript : MonoBehaviour
         vel.x = vel.x * 0.9f; // slow player down when not pressing left or right
 
 
-        if (Input.GetKey("left"))
+        if (Input.GetKey(""))
         {
             vel.x = -playerWalkSpeed;
         }
 
-        if (Input.GetKey("right"))
+        if (Input.GetKey(""))
         {
             vel.x = playerWalkSpeed;
         }
 
         rb.velocity = vel;
     }
+
+    void Jump()
+    {
+        if (Input.GetKeyDown(""))
+        {
+            rb.velocity = new Vector2(rb.velocity.x, playerJumpVelocity );
+        }
+    }    
 
     void Animate()
     {
@@ -79,12 +89,6 @@ public class PlayerScript : MonoBehaviour
 
     }
 
-    void Jump()
-    {
-        if (Input.GetKeyDown("space"))
-        {
-            rb.velocity = new Vector2(rb.velocity.x, playerJumpVelocity );
-        }
-    }
+    
 
 }
