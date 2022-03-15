@@ -14,16 +14,16 @@ public class CameraScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        target_Offset = transform.position - target.position;
+        
 
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if (target)
         {
-            transform.position = Vector3.Lerp(transform.position, target.position + target_Offset, 0.1f);
+            transform.position = Vector3.Lerp(transform.position, target.position + target_Offset, 0.05f);
         }
 
     }

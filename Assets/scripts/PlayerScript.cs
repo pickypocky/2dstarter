@@ -40,6 +40,9 @@ public class PlayerScript : MonoBehaviour
     {
         Vector3 vel = rb.velocity;
 
+        vel.x = vel.x * 0.9f; // slow player down when not pressing left or right
+
+
         if (Input.GetKey("left"))
         {
             vel.x = -playerWalkSpeed;
@@ -50,17 +53,11 @@ public class PlayerScript : MonoBehaviour
             vel.x = playerWalkSpeed;
         }
 
-
-
         rb.velocity = vel;
-
-
-
     }
 
     void Animate()
     {
-        print(rb.velocity.x);
         if ( (rb.velocity.x > 0.1f) || (rb.velocity.x < -0.1f) )
         {
             anim.SetBool("run", true);
@@ -68,7 +65,6 @@ public class PlayerScript : MonoBehaviour
             if (rb.velocity.x < 0)
             {
                 sr.flipX = true;
-
             }
             else
             {
