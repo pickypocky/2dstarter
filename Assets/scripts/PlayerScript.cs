@@ -45,12 +45,12 @@ public class PlayerScript : MonoBehaviour
         vel.x = vel.x * 0.9f; // slow player down when not pressing left or right
 
 
-        if (Input.GetKey(""))
+        if (Input.GetKey("left"))
         {
             vel.x = -playerWalkSpeed;
         }
 
-        if (Input.GetKey(""))
+        if (Input.GetKey("right"))
         {
             vel.x = playerWalkSpeed;
         }
@@ -60,7 +60,7 @@ public class PlayerScript : MonoBehaviour
 
     void Jump()
     {
-        if (Input.GetKeyDown(""))
+        if (Input.GetKeyDown("space"))
         {
             rb.velocity = new Vector2(rb.velocity.x, playerJumpVelocity );
         }
