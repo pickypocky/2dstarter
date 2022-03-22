@@ -26,30 +26,12 @@ public class Pumpkin : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-
-        rb.velocity = new Vector2(xDirection, rb.velocity.y);
-
-        int side = CheckCollision( transform.position.x, transform.position.y, 0.25f, 0.3f );
-
-        print("side=" + side);
-
-        if( side == -1 )
-        {
-            xDirection = speed;
-        }
-
-        if( side == 1 )
-        {
-            xDirection = -speed;
-        }
-
-
+        MoveEnemy();
     }
 
     void Update()
     {
-        // check for enemy hitting a wall
-
+        // Make enemy face the direction he is moving
         FaceDirection();
     }
 
@@ -66,8 +48,35 @@ public class Pumpkin : MonoBehaviour
         }
     }
 
+    
+
+    void MoveEnemy()
+    {
+        rb.velocity = new Vector2(xDirection, rb.velocity.y);
+
+        int side = CheckCollision( transform.position.x, transform.position.y, 0.25f, 0.3f );
+
+        print("side=" + side);
+
+        if( side == -1 )
+        {
+            xDirection = speed;
+        }
+
+        if( side == 1 )
+        {
+            xDirection = -speed;
+        }
+
+    }
+
+
     int CheckCollision( float x, float y, float width, float height )
     {
+        // returns -1 (hit on left side)
+        // or 1 (hit on right side)
+        // or 0 (no collision)
+        
         Vector2 lineStart, lineEnd;
         RaycastHit2D hit;
         
@@ -92,12 +101,11 @@ public class Pumpkin : MonoBehaviour
         hit = Physics2D.Linecast( lineStart,lineEnd, layerMask);
         Debug.DrawLine( lineStart,lineEnd, hit?Color.red:Color.white );
 
-        if( hit )
+        if( hit == true )
         {
             return 1;
         }
         return 0;
-
-        
-    }
+    
+    }    
 }
