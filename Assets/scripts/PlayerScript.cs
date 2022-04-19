@@ -97,7 +97,8 @@ public class PlayerScript : MonoBehaviour
         if (collision.gameObject.tag == "enemy")
         {
             print("player dead");
-            transform.position = restartPoint.position;
+            //transform.position = restartPoint.position;
+            transform.position = new Vector2( 0,0 );
         }
     }
 
