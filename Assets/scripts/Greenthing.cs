@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pumpkin : MonoBehaviour
+public class Greenthing : MonoBehaviour
 {
     Rigidbody2D rb;
     float xDirection = -1;

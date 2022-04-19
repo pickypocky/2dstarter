@@ -13,6 +13,9 @@ public class PlayerScript : MonoBehaviour
     public float playerWalkSpeed = 1;
     public float playerJumpVelocity = 3;
 
+    public Transform restartPoint;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -60,7 +63,7 @@ public class PlayerScript : MonoBehaviour
 
     void Jump()
     {
-        if (Input.GetKeyDown("space"))
+        if (Input.GetKeyDown("left alt"))
         {
             rb.velocity = new Vector2(rb.velocity.x, playerJumpVelocity );
         }
@@ -89,6 +92,15 @@ public class PlayerScript : MonoBehaviour
 
     }
 
-    
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "enemy")
+        {
+            print("player dead");
+            transform.position = restartPoint.position;
+        }
+    }
+
+
 
 }
