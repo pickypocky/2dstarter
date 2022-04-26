@@ -5,8 +5,8 @@ using UnityEngine;
 public class Greenthing : MonoBehaviour
 {
     Rigidbody2D rb;
-    float xDirection = -1;
-    public int layerMask;
+    float xDirection;
+    int layerMask;
     SpriteRenderer sr;
     public float speed;
     // Start is called before the first frame update
@@ -15,12 +15,15 @@ public class Greenthing : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         
-        rb.velocity = new Vector2(1,0);
+        
 
-        layerMask = 1 << LayerMask.NameToLayer("wall");
-        layerMask += 1 << LayerMask.NameToLayer("enemy");
+        // we only want to check collision with the platform layer
+        layerMask = 1 << LayerMask.NameToLayer("platform");
+        
 
-        speed = 1.3f;
+        // set initial speed
+        speed = 1.0f;
+        xDirection = speed;
     }
 
     // Update is called once per frame
@@ -38,6 +41,7 @@ public class Greenthing : MonoBehaviour
 
     void FaceDirection()
     {
+        // set enemy to face the direction of movement
         if (rb.velocity.x > 0)
         {
             sr.flipX = true;
@@ -52,11 +56,12 @@ public class Greenthing : MonoBehaviour
 
     void MoveEnemy()
     {
+        // change enemy direction if not touching a platform
         rb.velocity = new Vector2(xDirection, rb.velocity.y);
 
         int side = CheckCollision( transform.position.x, transform.position.y, 0.25f, 0.3f );
 
-        //print("side=" + side);
+        
 
         if( side == -1 )
         {
@@ -73,38 +78,46 @@ public class Greenthing : MonoBehaviour
 
     int CheckCollision( float x, float y, float width, float height )
     {
-        // returns -1 (hit on left side)
-        // or 1 (hit on right side)
-        // or 0 (no collision)
+        // returns -1 (not hitting left side)
+        // or 1 (not hitting on right side)
+        // or 0 (collision on both sides)
         
         Vector2 lineStart, lineEnd;
         RaycastHit2D hit;
-        
-        
+
+
+        // check for no collision on left side
         lineStart.x = x-width;
-        lineStart.y = y+height;
-        lineEnd.x = x-width;
+        lineStart.y = y - height;
+
+        lineEnd.x = x - width;
         lineEnd.y = y;
         
-        // check for left side
         hit = Physics2D.Linecast( lineStart,lineEnd, layerMask);
-        Debug.DrawLine( lineStart,lineEnd, hit?Color.red:Color.white );
-        if( hit )
+        Debug.DrawLine( lineStart,lineEnd, hit?Color.red:Color.green ); // draw the coloured debug line
+        if( hit == false )
         {
+            // not touching platform on left side of sprite
             return -1;
         }
 
-        // check right side
+
+
+
+        // check for no collision on right side
         lineStart.x = x + width;
         lineEnd.x = x + width;
 
         hit = Physics2D.Linecast( lineStart,lineEnd, layerMask);
-        Debug.DrawLine( lineStart,lineEnd, hit?Color.red:Color.white );
+        Debug.DrawLine( lineStart,lineEnd, hit?Color.red:Color.green );
 
-        if( hit == true )
+        if( hit == false )
         {
+            // not touching platform on right side of sprite
             return 1;
         }
+
+        // Sprite is touching platform
         return 0;
     
     }    
