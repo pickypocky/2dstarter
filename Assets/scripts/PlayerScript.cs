@@ -15,12 +15,18 @@ public class PlayerScript : MonoBehaviour
 
     public Transform restartPoint;
 
+    int floorLayerMask;
+
 
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
         anim.SetBool("run", true);
+
+        // player treats these layers as platforms
+        floorLayerMask = 1 << LayerMask.NameToLayer("platform");
+        floorLayerMask += 1 << LayerMask.NameToLayer("wall");
 
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
@@ -63,7 +69,9 @@ public class PlayerScript : MonoBehaviour
 
     void Jump()
     {
-        if (Input.GetKeyDown("left alt"))
+        bool touchingFloor = CheckFloorCollision(transform.position.x, transform.position.y, 0.2f, 0.05f);
+
+        if (Input.GetKeyDown("left alt") && (touchingFloor==true) )
         {
             rb.velocity = new Vector2(rb.velocity.x, playerJumpVelocity );
         }
@@ -97,10 +105,56 @@ public class PlayerScript : MonoBehaviour
         if (collision.gameObject.tag == "enemy")
         {
             print("player dead");
-            //transform.position = restartPoint.position;
-            transform.position = new Vector2( 0,0 );
+            transform.position = restartPoint.position;
         }
     }
+
+
+
+    bool CheckFloorCollision(float x, float y, float width, float height)
+    {
+        // returns -1 (not hitting left side)
+        // or 1 (not hitting on right side)
+        // or 0 (collision on both sides)
+
+        Vector2 lineStart, lineEnd;
+        RaycastHit2D hit;
+
+
+        // check for collision with floor
+
+        lineStart.y = y;
+        lineEnd.y = y-height;
+
+        lineStart.x = x;
+        lineEnd.x = x;
+        hit = Physics2D.Linecast(lineStart, lineEnd, floorLayerMask);
+        Debug.DrawLine(lineStart, lineEnd, hit ? Color.red : Color.green); // draw the coloured debug line
+
+        if (hit == false)
+        {
+            lineStart.x = x - width;
+            lineEnd.x = x - width;
+            hit = Physics2D.Linecast(lineStart, lineEnd, floorLayerMask);
+            Debug.DrawLine(lineStart, lineEnd, hit ? Color.red : Color.blue); // draw the coloured debug line
+
+        }
+
+        if (hit == false)
+        {
+            lineStart.x = x + width;
+            lineEnd.x = x + width;
+            hit = Physics2D.Linecast(lineStart, lineEnd, floorLayerMask);
+            Debug.DrawLine(lineStart, lineEnd, hit ? Color.red : Color.yellow); // draw the coloured debug line
+
+        }
+
+
+        return hit;
+
+
+    }
+
 
 
 

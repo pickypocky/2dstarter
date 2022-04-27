@@ -18,7 +18,7 @@ public class Pumpkin : MonoBehaviour
         rb.velocity = new Vector2(1,0);
 
         layerMask = 1 << LayerMask.NameToLayer("wall");
-        layerMask += 1 << LayerMask.NameToLayer("enemy");
+
 
         speed = 1.3f;
     }
