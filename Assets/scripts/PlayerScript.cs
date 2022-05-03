@@ -15,6 +15,8 @@ public class PlayerScript : MonoBehaviour
 
     public Transform restartPoint;
 
+    public GameObject weaponPrefab;
+
     int floorLayerMask;
 
 
@@ -44,6 +46,7 @@ public class PlayerScript : MonoBehaviour
         Move();
         Animate();
         Jump();
+        ShootWeapon();
 
     }
 
@@ -153,6 +156,27 @@ public class PlayerScript : MonoBehaviour
         return hit;
 
 
+    }
+
+    void ShootWeapon()
+    {
+        Vector2 position;
+        Rigidbody2D rb;
+
+        position.x = transform.position.x;
+        position.y = transform.position.y + 0.2f;
+
+        if( Input.GetKeyDown("f") == true )
+        {
+            GameObject weapon = Instantiate(weaponPrefab, position, Quaternion.identity );
+            rb = weapon.GetComponent<Rigidbody2D>();
+            rb.velocity = new Vector2( -2,0 );
+
+            if( sr.flipX == false )
+            {
+                rb.velocity = new Vector2( 2,0 );
+            }
+        }
     }
 
 
