@@ -57,7 +57,7 @@ public class PlayerScript : MonoBehaviour
         Move();
         Animate();
         FaceDirection();
-        //Jump();
+        Jump();
         ShootWeapon();
         Land();
         //UpdateScore();
