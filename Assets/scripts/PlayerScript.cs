@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI; // add this line to access text
 
 //keys=left,right,space
 
@@ -18,6 +19,13 @@ public class PlayerScript : MonoBehaviour
     public GameObject weaponPrefab;
 
     int floorLayerMask;
+    bool jumping,touchingFloor;
+
+
+
+    public static int score, oldScore;
+    public Text scoreText;
+
 
 
     // Start is called before the first frame update
@@ -32,6 +40,8 @@ public class PlayerScript : MonoBehaviour
 
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+
+        jumping = false;
         
     }
 
@@ -43,10 +53,14 @@ public class PlayerScript : MonoBehaviour
         anim.SetBool("idle", false);
         anim.SetBool("jump", false);
 
+        touchingFloor = CheckFloorCollision(transform.position.x, transform.position.y, 0.2f, 0.05f);
         Move();
         Animate();
-        Jump();
+        FaceDirection();
+        //Jump();
         ShootWeapon();
+        Land();
+        //UpdateScore();
 
     }
 
@@ -72,35 +86,56 @@ public class PlayerScript : MonoBehaviour
 
     void Jump()
     {
-        bool touchingFloor = CheckFloorCollision(transform.position.x, transform.position.y, 0.2f, 0.05f);
+        
 
         if (Input.GetKeyDown("left alt") && (touchingFloor==true) )
         {
             rb.velocity = new Vector2(rb.velocity.x, playerJumpVelocity );
+            jumping = true;
+        
         }
     }    
 
+    void Land()
+    {
+        // check for player moving downwards and touching floor and jumping
+        if ( (rb.velocity.y < 0) && (touchingFloor == true) && (jumping==true) )
+        {
+            jumping = false;
+            anim.SetBool("jump", false);
+        }
+
+    }
+
     void Animate()
     {
+        if( jumping == true )
+        {
+            anim.SetBool("jump", true);
+            return;
+        }
+
         if ( (rb.velocity.x > 0.1f) || (rb.velocity.x < -0.1f) )
         {
             anim.SetBool("run", true);
 
-            if (rb.velocity.x < 0)
-            {
-                sr.flipX = true;
-            }
-            else
-            {
-                sr.flipX = false;
-            }
         }
         else
         {
             anim.SetBool("idle", true);
         }
+    }
 
-
+    void FaceDirection()
+    {
+        if (rb.velocity.x < 0)
+        {
+            sr.flipX = true;
+        }
+        if (rb.velocity.x > 0)
+        {
+            sr.flipX = false;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -166,7 +201,7 @@ public class PlayerScript : MonoBehaviour
         position.x = transform.position.x;
         position.y = transform.position.y + 0.2f;
 
-        if( Input.GetKeyDown("f") == true )
+        if( Input.GetKeyDown(KeyCode.LeftControl) == true )
         {
             GameObject weapon = Instantiate(weaponPrefab, position, Quaternion.identity );
             rb = weapon.GetComponent<Rigidbody2D>();
@@ -177,6 +212,22 @@ public class PlayerScript : MonoBehaviour
                 rb.velocity = new Vector2( 2,0 );
             }
         }
+    }
+
+
+    void UpdateScore()
+    {
+        if( oldScore != score ) // check to see if the score has changed since last time
+        {
+            scoreText.text = "Score " + score.ToString();  // convert the int to a string
+            
+        }
+
+        oldScore = score;
+        
+        
+
+
     }
 
 

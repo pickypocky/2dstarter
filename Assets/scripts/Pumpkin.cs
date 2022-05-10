@@ -108,4 +108,17 @@ public class Pumpkin : MonoBehaviour
         return 0;
     
     }    
+
+    void OnTriggerEnter2D( Collider2D collision )
+    {
+
+        if( collision.gameObject.tag == "weapon")
+        {
+            // kill the pumpkin
+            Destroy( this.gameObject);
+
+            // increase player score by 10 points
+            PlayerScript.score = PlayerScript.score + 10;
+        }
+    }
 }
